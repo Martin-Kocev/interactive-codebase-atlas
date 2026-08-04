@@ -1,0 +1,671 @@
+{
+  "uiSchemaVersion": "1.0",
+  "_readme": [
+    "Every user-facing string, heading, label, field table, navigation entry and empty",
+    "state the atlas renders lives in this file. assets/atlas.js contains no copy of its",
+    "own — it looks everything up here through assets/templates.js (window.AtlasUI).",
+    "",
+    "To reword, reorder, retitle or re-theme the atlas, edit THIS file and re-run",
+    "  node scripts/validate-atlas.mjs .",
+    "which regenerates data/atlas.bundle.js. No JavaScript needs to change.",
+    "",
+    "Three things you can do here without touching code:",
+    "  strings  — any value may contain {{placeholders}}; the renderer fills them.",
+    "             `backticks` become <code>, *asterisks* become <em>.",
+    "  fields   — each views.*.fields array defines a key/value table row by row.",
+    "             { label, from } reads a property off the item; { label, compute }",
+    "             calls a named computation registered in atlas.js (see COMPUTED);",
+    "             delete a row to hide it, reorder rows to reorder the table.",
+    "  theme    — cssVars are written onto :root at boot, overriding assets/atlas.css.",
+    "",
+    "This file is curated, not generated. An atlas update rewrites data/atlas.json;",
+    "it must never rewrite this file."
+  ],
+
+  "theme": {
+    "cssVars": {},
+    "defaultDepth": "balanced",
+    "playIntervalMs": 3400,
+    "playIntervalReducedMs": 1200
+  },
+
+  "app": {
+    "documentTitleFallback": "Codebase Atlas",
+    "brandFallbackSuffix": " Atlas",
+    "detachedLabel": "detached"
+  },
+
+  "chrome": {
+    "commitChip": {
+      "html": "Atlas updated through commit <b>{{commitShort}}</b> — “{{commitSubject}}”",
+      "title": "The atlas describes this exact commit"
+    },
+    "depth": {
+      "groupLabel": "Technical depth",
+      "levels": [
+        { "id": "simple", "label": "Simple" },
+        { "id": "balanced", "label": "Balanced" },
+        { "id": "deep", "label": "Deep dive" }
+      ]
+    },
+    "search": {
+      "placeholder": "Search the atlas",
+      "ariaLabel": "Search the atlas",
+      "minChars": 2,
+      "maxResults": 12,
+      "noMatch": "Nothing matches “{{query}}”"
+    },
+    "focus": {
+      "label": "Focus",
+      "title": "Focus mode (f) — hides secondary navigation and optional detail"
+    },
+    "ambient": {
+      "on": "Calm water",
+      "off": "Still water",
+      "title": "Ambient water motion — independent of your system's reduced-motion setting"
+    },
+    "storage": {
+      "file": {
+        "label": "Saved to disk",
+        "title": "Your progress is written to progress/progress.json in the atlas directory. Clearing your browser data does not affect it.",
+        "errorLabel": "Not saving",
+        "errorTitle": "The last save to progress/progress.json failed — is the atlas still being served? Your progress is still held in this browser and will be written on the next successful save."
+      },
+      "browser": {
+        "label": "This browser only",
+        "title": "Progress is stored in this browser's localStorage, because the atlas was opened as a file rather than served. Run node scripts/serve-atlas.mjs . to keep it in progress/progress.json instead."
+      }
+    },
+    "theme": { "toLight": "Light", "toDark": "Dark" }
+  },
+
+  "_rail": [
+    "`icon` names a glyph in assets/icons.js — never a Unicode character, because",
+    "these carry meaning. `requires` names an atlas.json collection; the entry is",
+    "hidden when that collection is absent or empty ('updated' is the special case",
+    "for 'more than one update has happened')."
+  ],
+  "rail": {
+    "progressLabel": "{{completed}} of {{total}} sections completed",
+    "sectionsHeading": "Sections",
+    "toolsHeading": "Tools",
+    "progressHeading": "Your progress",
+    "nav": [
+      { "href": "#/", "label": "Overview", "icon": "compass" },
+      { "href": "#/tour", "label": "The full tour", "icon": "route" },
+      { "href": "#/architecture", "label": "World map", "icon": "island" },
+      { "href": "#/changed", "label": "Recent changes", "icon": "waves", "requires": "updated" },
+      { "href": "#/workflows", "label": "Guided tours", "icon": "ship", "requires": "workflows" },
+      { "href": "#/explorer", "label": "Repository explorer", "icon": "folder" },
+      { "href": "#/data", "label": "Data model", "icon": "cylinder", "requires": "entities" },
+      { "href": "#/communication", "label": "Sea routes", "icon": "exchange", "requires": "channels" },
+      { "href": "#/auth", "label": "Auth", "icon": "alert", "requires": "auth" },
+      { "href": "#/subsystems", "label": "Deep dives", "icon": "beaker", "requires": "subsystems" },
+      { "href": "#/delivery", "label": "Testing & delivery", "icon": "check", "requires": "delivery" },
+      { "href": "#/change", "label": "Where to change this", "icon": "scroll", "requires": "changePlaybooks" },
+      { "href": "#/glossary", "label": "Glossary", "icon": "file", "requires": "glossary" },
+      { "href": "#/questions", "label": "Open questions", "icon": "question", "requires": "openQuestions" }
+    ],
+    "toolsNav": [
+      { "href": "#/search", "label": "Search", "icon": "map" },
+      { "href": "#/bookmarks", "label": "Bookmarks", "icon": "bookmark" },
+      { "href": "#/quests", "label": "Quests", "icon": "ship" },
+      { "href": "#/settings", "label": "Settings", "icon": "gear" }
+    ],
+    "progressNav": [
+      { "href": "#/progress", "label": "Completion checklist", "icon": "circleCheck" }
+    ]
+  },
+
+  "_search": [
+    "kindLabels turns an atlas.json collection name into the reader's word for it.",
+    "A missing key falls back to the raw collection name, so adding a collection",
+    "degrades to something honest rather than to a blank."
+  ],
+  "search": {
+    "kindLabels": {
+      "components": "Islands",
+      "areas": "Areas",
+      "files": "Key files",
+      "connections": "Routes",
+      "workflows": "Guided tours",
+      "steps": "Tour stops",
+      "entities": "Data",
+      "channels": "Communication",
+      "subsystems": "Deep dives",
+      "changePlaybooks": "Change playbooks",
+      "glossary": "Glossary",
+      "knowledgeChecks": "Knowledge checks",
+      "openQuestions": "Open questions",
+      "learningPaths": "Learning paths",
+      "auth": "Authentication",
+      "delivery": "Testing and delivery"
+    },
+    "reasons": {
+      "title": "Title match",
+      "source": "Source or symbol match",
+      "explanation": "Explanation match"
+    }
+  },
+
+  "_sectionTitles": [
+    "Short names for the sections that have no title in atlas.json — the auth and",
+    "delivery singletons. Used anywhere an item is listed by name (the progress",
+    "checklist, search results, the What changed? list), where the view's own",
+    "sentence-length heading would be too long."
+  ],
+  "sectionTitles": {
+    "section-auth": "Authentication and access",
+    "section-delivery": "Testing and delivery"
+  },
+
+  "badges": {
+    "confidenceTitles": {
+      "verified": "Supported by a comment, test, doc, commit, or observable behaviour",
+      "inferred": "A reasonable conclusion from the implementation, not stated anywhere",
+      "unknown": "The repository does not provide enough evidence"
+    },
+    "updatedSinceSeen": "Updated since you last viewed this",
+    "updatedShort": "Updated"
+  },
+
+  "states": {
+    "labels": {
+      "not-started": "Not started",
+      "started": "In progress",
+      "viewed": "Viewed",
+      "completed": "Completed"
+    },
+    "icons": {
+      "not-started": "circle",
+      "started": "circleHalf",
+      "viewed": "circleDot",
+      "completed": "circleCheck"
+    }
+  },
+
+  "actions": {
+    "complete": "Mark complete",
+    "completed": "Completed — reopen",
+    "bookmark": "Bookmark",
+    "bookmarked": "Bookmarked",
+    "unclear": "Mark unclear",
+    "unclearOn": "Marked unclear",
+    "nextLabel": "Next"
+  },
+
+  "notices": {
+    "stale": {
+      "strong": "This atlas may be outdated. ",
+      "body": "The repository is {{count}} commit{{s}} ahead of the version currently documented."
+    },
+    "dirty": {
+      "strong": "Generated while {{count}} file{{s}} had uncommitted changes. ",
+      "body": "Everything below describes committed HEAD ({{commitShort}}). Uncommitted work is not documented: {{files}}"
+    },
+    "conflict": {
+      "strong": "Documentation and code disagree. ",
+      "body": "{{claim}} — but {{reality}}. "
+    }
+  },
+
+  "common": {
+    "dash": "—",
+    "middot": " · ",
+    "sourcesTestsLabel": "tests",
+    "whyStepSummary": "Why is this step here?",
+    "notDocumented": "Not documented.",
+    "genericEmpty": {
+      "title": "Nothing documented here yet",
+      "body": "Run the atlas update to add it."
+    }
+  },
+
+  "check": {
+    "kicker": "Optional check — skip freely",
+    "correctPrefix": "Yes — ",
+    "incorrectPrefix": "Not quite — "
+  },
+
+  "views": {
+    "home": {
+      "locationLine": "Harbour · {{repo}}",
+      "startAction": "Set sail",
+      "continueAction": "Continue expedition",
+      "exploredLabel": "World explored",
+      "exploredDetail": "{{completed}} of {{total}} landmarks understood",
+      "worldPreviewLabel": "Preview of the repository archipelago — each island opens its own page",
+      "previewIslandTitle": "Explore {{name}}",
+      "pathsHeading": "Where would you like to start?",
+      "pathMeta": {
+        "explore": "Free exploration",
+        "continue": "Resume where you stopped",
+        "what-changed": "Since your last visit",
+        "review-unfinished": "{{count}} to revisit",
+        "follow-one-action": "{{count}} steps",
+        "follow-one-action-fallback": "One traced action",
+        "default-one": "1 step",
+        "default": "{{count}} steps"
+      }
+    },
+
+    "_tour": [
+      "The one ordered route through every tracked section. Stages are defined by",
+      "atlas.json COLLECTION NAME, never by a list of ids — so a regenerated atlas",
+      "files each new section into the right stage automatically instead of leaving",
+      "a dead id behind. Order within a stage is that collection's authored order.",
+      "Reorder the walkthrough by reordering `stages`; drop a stage by deleting it."
+    ],
+    "tour": {
+      "heading": "The full tour",
+      "lede": "Every section in the atlas, in an order where each stop makes the next one easier: what the pieces are, how they talk to each other, what they store, what they do end to end, and finally how to change any of it. Stop and resume whenever — the atlas remembers where you were.",
+      "progressSummary": "{{completed}} of {{total}} stops complete",
+      "stageMeta": "{{completed}} of {{total}}",
+      "startAction": "Start the tour",
+      "continueAction": "Continue the tour",
+      "reviewAction": "Revisit the first stop",
+      "nextUpLead": "Next stop",
+      "stopLabel": "Stop {{n}} of {{total}}",
+      "stageNavLabel": "Stops in {{stage}}",
+      "doneTitle": "You have been everywhere.",
+      "doneBody": "All {{total}} stops are marked complete. Reopen any of them from the completion checklist — nothing here locks.",
+      "stages": [
+        {
+          "id": "islands",
+          "kinds": ["components"],
+          "title": "The islands",
+          "blurb": "What the pieces are, from the screen a visitor touches down to the stores that outlive every request."
+        },
+        {
+          "id": "routes",
+          "kinds": ["channels"],
+          "title": "The routes between them",
+          "blurb": "How the islands actually talk — the mechanism behind each line on the map, and what happens when one of them fails."
+        },
+        {
+          "id": "cargo",
+          "kinds": ["entities"],
+          "title": "What travels",
+          "blurb": "The records the system keeps: what each one means in the real world, and where it is written down."
+        },
+        {
+          "id": "voyages",
+          "kinds": ["workflows"],
+          "title": "Whole journeys",
+          "blurb": "End-to-end runs, step by step — from a person taking an action to the system producing a visible result."
+        },
+        {
+          "id": "harbour-rules",
+          "kinds": ["auth"],
+          "title": "Who is allowed",
+          "blurb": "Identity, roles, and what each role may do — the rules every other section assumes."
+        },
+        {
+          "id": "depths",
+          "kinds": ["subsystems"],
+          "title": "The depths",
+          "blurb": "The subsystems worth understanding on their own terms before you touch them."
+        },
+        {
+          "id": "shipping",
+          "kinds": ["delivery"],
+          "title": "Getting it out",
+          "blurb": "How the project is tested, built, and delivered."
+        },
+        {
+          "id": "changing",
+          "kinds": ["changePlaybooks"],
+          "title": "Changing it yourself",
+          "blurb": "The exact files to open for the changes people most often need to make. This is what the rest of the tour was for."
+        }
+      ],
+      "empty": {
+        "title": "Nothing to tour yet",
+        "body": "The atlas has no tracked sections. Regenerate it against the repository to populate the route."
+      }
+    },
+
+    "architecture": {
+      "heading": "How the system fits together",
+      "lede": "The repository's islands and the routes between them. Select one to see what it does, why it exists, and what it talks to. Only the selected route animates.",
+      "listSummary": "Explore islands as a list",
+      "listNavLabel": "Islands in this repository",
+      "detailHeading": "Island log",
+      "islandLinkLabel": "Explore {{name}}, {{kind}}",
+      "mapSummary": "Show illustrated map",
+      "routesHeading": "Routes between islands",
+      "routeKindFallback": "dependency",
+      "routeLabelFallback": "connected",
+      "emptyRoutes": {
+        "title": "No routes documented",
+        "body": "The islands are listed above and remain fully navigable."
+      },
+      "emptyDetail": {
+        "title": "Nothing selected yet",
+        "body": "Pick an island in the list or on the map — or press Tab then Enter — to see what it is responsible for and why it exists."
+      },
+      "exampleLead": "For example: ",
+      "fields": [
+        { "label": "Responsible for", "from": "responsibility" },
+        { "label": "Used by", "from": "audience" },
+        { "label": "Entry point", "compute": "entryPoint" },
+        { "label": "Talks to", "compute": "componentConnections", "fallback": "Nothing else directly" }
+      ]
+    },
+
+    "workflows": {
+      "heading": "Follow a real action through the system",
+      "lede": "Each story starts with something a person does and ends with what they see. Step through it one hop at a time.",
+      "cardMeta": "{{steps}} steps · {{state}}"
+    },
+
+    "simulator": {
+      "crumb": "Workflows",
+      "counter": "Step {{n}} of {{total}}",
+      "fields": [
+        { "label": "File", "compute": "stepSource" },
+        { "label": "Input", "from": "input" },
+        { "label": "Output", "from": "output" }
+      ],
+      "failureLead": "If this fails: ",
+      "testsLabel": "covered by",
+      "controls": {
+        "previous": "Previous",
+        "next": "Next",
+        "finish": "Finish story",
+        "play": "Play",
+        "pause": "Pause",
+        "replay": "Replay",
+        "bigPicture": "Big picture",
+        "showCode": "Show code",
+        "hideCode": "Hide code",
+        "showFailure": "Show failure",
+        "hideFailure": "Hide failure",
+        "showTests": "Show tests",
+        "hideTests": "Hide tests",
+        "explainMore": "Explain more",
+        "explainLess": "Explain less"
+      },
+      "endHint": "You have reached the end of this story.",
+      "endAction": "Back to workflows"
+    },
+
+    "explorer": {
+      "heading": "What lives where",
+      "lede": "Grouped by what the code is responsible for. The real folder tree is one toggle away when you want it.",
+      "crumb": "Repository explorer",
+      "openArea": "Explore this area",
+      "keyFilesHeading": "Load-bearing files",
+      "whyAreaLead": "Why this area matters: ",
+      "whyFileLead": "Why this file matters: ",
+      "areaFields": [
+        { "label": "Technical name", "from": "technicalName", "when": "technicalName" },
+        { "label": "Paths", "from": "paths", "join": ", " },
+        { "label": "Islands", "from": "componentIds", "mapLabels": true, "join": ", " }
+      ],
+      "fileFields": [
+        { "label": "Path", "from": "path" },
+        { "label": "Key symbols", "from": "symbols", "join": ", ", "when": "symbols" },
+        { "label": "Dependencies", "from": "dependencies", "mapLabels": true, "join": ", ", "when": "dependencies" },
+        { "label": "Dependents", "from": "dependents", "mapLabels": true, "join": ", ", "when": "dependents" }
+      ],
+      "modes": [
+        { "id": "conceptual", "label": "By responsibility" },
+        { "id": "folders", "label": "Actual folders" },
+        { "id": "recently-changed", "label": "Recently changed" },
+        { "id": "unexplored", "label": "Not yet explored" }
+      ],
+      "modesAriaLabel": "Explorer view",
+      "componentsLead": "Components: ",
+      "empty": {
+        "recently-changed": {
+          "title": "Nothing recorded as recently changed",
+          "body": "This appears after the atlas has been updated at least once."
+        },
+        "unexplored": {
+          "title": "You have opened something in every group",
+          "body": "Switch to “By responsibility” to revisit any of them."
+        }
+      }
+    },
+
+    "data": {
+      "heading": "What the system remembers",
+      "lede": "The entities that matter most, and why each one is separate from the others.",
+      "whySeparateSummary": "Why is this separate from related entities?",
+      "storedLabel": "stored",
+      "validatedLabel": "validated",
+      "fields": [
+        { "label": "Really means", "from": "realWorldMeaning" },
+        { "label": "Kind of data", "compute": "entityKind" },
+        { "label": "Lifecycle", "from": "lifecycle", "join": " → " },
+        { "label": "Created by", "from": "createdBy", "mapLabels": true, "join": ", " },
+        { "label": "Read by", "from": "readBy", "mapLabels": true, "join": ", " }
+      ]
+    },
+
+    "communication": {
+      "heading": "How the parts stay in step",
+      "lede": "Each mechanism, what it carries, what happens when it works — and what happens when it does not.",
+      "cardTitle": "{{title}} · {{mechanism}}",
+      "fields": [
+        { "label": "Initiator", "from": "initiator" },
+        { "label": "Receiver", "from": "receiver" }
+      ],
+      "connectionFields": [
+        { "label": "Data", "from": "data" },
+        { "label": "Validation", "from": "validation" },
+        { "label": "Auth", "from": "auth" },
+        { "label": "On success", "from": "onSuccess" },
+        { "label": "On failure", "from": "onFailure" },
+        { "label": "Retry", "from": "retry", "fallback": "None" },
+        { "label": "Why this way", "from": "whyThisMechanism" }
+      ],
+      "successLabel": "When it works",
+      "failureLabel": "When it fails",
+      "recoveryLead": "Recovery: ",
+      "resolutionLead": "Resolution: "
+    },
+
+    "auth": {
+      "heading": "Who you are, and what you may do",
+      "lede": "Two different questions with two different answers — and the enforcement point is rarely where people expect.",
+      "fields": [
+        { "label": "Identity", "from": "identity" },
+        { "label": "Sessions", "from": "sessionModel" },
+        { "label": "On failure", "from": "failureBehaviour" }
+      ],
+      "enforcementHeading": "Where it is actually enforced",
+      "whyLayersSummary": "Why is this checked in more than one layer?",
+      "sensitiveLead": "Sensitive operations: "
+    },
+
+    "subsystems": {
+      "heading": "The parts worth slowing down for",
+      "lede": "Subsystems that reward a closer look. Each ends with where to start when you need to change it.",
+      "crumb": "Deep dives",
+      "cardMeta": "{{stages}} stages · {{state}}",
+      "fields": [
+        { "label": "Purpose", "from": "purpose" },
+        { "label": "Inputs", "from": "inputs" },
+        { "label": "Outputs", "from": "outputs" }
+      ],
+      "stagesHeading": "Inside, stage by stage",
+      "invariantsLead": "Always true here: ",
+      "failureSummary": "Where this breaks",
+      "startHereLabel": "Start here when changing it"
+    },
+
+    "delivery": {
+      "heading": "How a change reaches production",
+      "lede": "Every stage exists because something once went wrong without it.",
+      "testTypesHeading": "Test types",
+      "commandsHeading": "Commands worth knowing",
+      "trapsLead": "Traps in this repository: ",
+      "whyLayersSummary": "Why so many verification layers?"
+    },
+
+    "change": {
+      "heading": "Where should I change this?",
+      "lede": "Common tasks, with the file to open first and the layers that will need to follow.",
+      "startLead": "Start at ",
+      "alsoAffectsSummary": "What else this touches",
+      "testsLabel": "update these tests",
+      "rulesLead": "Project rules that apply: ",
+      "doNotTouchLead": "Leave alone: ",
+      "whyHereSummary": "Why does the change belong there?"
+    },
+
+    "glossary": {
+      "heading": "The words this project uses",
+      "lede": "Only terms that actually appear in the repository — with why each concept exists.",
+      "technicallySummary": "Technically",
+      "whyLead": "Why it exists: ",
+      "appearsLead": "Appears in: ",
+      "empty": { "title": "No terms match that search", "body": "Clear the search to see the full glossary." }
+    },
+
+    "questions": {
+      "heading": "What the repository does not say",
+      "lede": "Questions the code raises and never answers. Recorded as unknown rather than guessed at — a plausible invention here would be indistinguishable from a fact.",
+      "unknownBadge": "unknown",
+      "fields": [
+        { "label": "What is known", "from": "whatIsKnown" },
+        { "label": "Why it is unknown", "from": "whyUnknown" },
+        { "label": "Where to look", "from": "whereToLook" }
+      ],
+      "empty": { "title": "No open questions", "body": "Everything the atlas documents is backed by evidence in the repository." }
+    },
+
+    "search": {
+      "heading": "Search",
+      "lede": "One index across islands, tours, concepts, glossary terms, source paths and symbols — so a question like “where is the request handler?” is answerable here.",
+      "placeholder": "Search islands, tours, symbols, paths…",
+      "ariaLabel": "Search all atlas content",
+      "indexHeading": "Indexed repository knowledge",
+      "indexBody": "{{count}} stable atlas records share this search index.",
+      "noResults": {
+        "title": "No atlas records match “{{query}}”",
+        "body": "Try an island name, a source path, a symbol, a workflow, or a project term."
+      }
+    },
+
+    "quests": {
+      "heading": "Quests",
+      "lede": "Optional goals assembled from the learning paths and knowledge checks this repository supports. No scores, timers, streaks, or locked content — skip any of them freely.",
+      "cardMeta": "{{completed}} of {{total}} concepts completed",
+      "cardChecks": " · {{count}} optional check{{s}}",
+      "empty": {
+        "title": "No unfinished quests",
+        "body": "Reopen any concept from the completion checklist whenever you want another pass."
+      }
+    },
+
+    "bookmarks": {
+      "heading": "Bookmarks",
+      "lede": "Islands, tours and concepts you saved for a deliberate return. Each one links back to where you found it."
+    },
+
+    "settings": {
+      "heading": "Settings",
+      "lede": "Reading preferences and progress controls. Nothing here is sent anywhere.",
+      "themeAriaLabel": "Theme setting",
+      "themes": [
+        { "id": "auto", "label": "System" },
+        { "id": "light", "label": "Day" },
+        { "id": "dark", "label": "Night" }
+      ],
+      "focusEnter": "Enter focus",
+      "focusExit": "Exit focus",
+      "progressHeading": "Your progress",
+      "rows": {
+        "depth": {
+          "title": "Technical depth",
+          "body": "Change how much detail every explanation carries, without losing your place."
+        },
+        "theme": {
+          "title": "Theme",
+          "body": "Follow the system, or pin the day or night palette."
+        },
+        "ambient": {
+          "title": "Ambient water",
+          "body": "Keep the calm environmental motion, or hold the scene still. Separate from your system's reduced-motion setting, which always wins."
+        },
+        "focus": {
+          "title": "Focus mode",
+          "body": "Hide secondary navigation and optional detail while keeping depth, progress and the current content."
+        }
+      }
+    },
+
+    "progress": {
+      "heading": "What you have explored",
+      "lede": "Opening a section is not the same as understanding it — completion is always your call.",
+      "storage": {
+        "file": "Kept in `progress/progress.json`, inside the atlas directory. Clearing your browser's data or history does not touch it, and it moves with the folder — but it is a plain local file, not an account: nothing is sent anywhere.",
+        "browser": "Kept in this browser's `localStorage`, because the atlas was opened as a file rather than served. Clearing site data clears it. Start the atlas with `node scripts/serve-atlas.mjs .` to keep it in `progress/progress.json` on disk instead — this browser's history is adopted automatically the first time you do."
+      },
+      "summary": "{{completed}} completed · {{viewed}} viewed · {{started}} in progress · {{notStarted}} not started · {{bookmarked}} bookmarked · {{unclear}} unclear",
+      "filtersAriaLabel": "Filter",
+      "filters": [
+        { "id": "all", "label": "Everything" },
+        { "id": "unfinished", "label": "Unfinished only" },
+        { "id": "bookmarked", "label": "Bookmarked" },
+        { "id": "unclear", "label": "Marked unclear" },
+        { "id": "changed", "label": "Changed since last view" }
+      ],
+      "bookmarkedTag": "Bookmarked",
+      "unclearTag": "Unclear",
+      "export": "Export progress",
+      "import": "Import progress",
+      "reset": "Reset progress",
+      "resetConfirm": "Clear your local reading progress for this atlas? The atlas content is untouched.",
+      "importError": "That file is not a progress export.",
+      "exportFilename": "codebase-atlas-progress.json",
+      "empty": {
+        "all": { "title": "Nothing here yet", "body": "Open a section to begin." },
+        "unfinished": { "title": "Everything is marked complete", "body": "Reopen any section from the list to revisit it." },
+        "bookmarked": { "title": "No bookmarks yet", "body": "Use the Bookmark button on any section to collect it here." },
+        "unclear": { "title": "Nothing is marked unclear", "body": "Use “Mark unclear” when something does not land — it will be gathered here for a second pass." },
+        "changed": { "title": "Nothing has changed since you last looked", "body": "This fills in after the atlas is updated against a newer commit." }
+      }
+    },
+
+    "changed": {
+      "heading": "Since the atlas last looked",
+      "lede": "Repository changes that moved atlas content, grouped by the idea that changed rather than by commit. Your progress is untouched — an updated section keeps whatever state you gave it.",
+      "lastCatchUp": "Last finished catch-up: {{commit}}",
+      "noCatchUp": "No catch-up has been finished in this browser yet.",
+      "groupsHeading": "Conceptual change groups",
+      "whyLead": "Why it changed: ",
+      "affectedLead": "Affected: ",
+      "reviewedTag": "Reviewed",
+      "unreviewedTag": "Not reviewed",
+      "markReviewed": "Mark reviewed",
+      "markUnreviewed": "Mark unreviewed",
+      "catchUpReadyTitle": "Ready to leave catch-up?",
+      "catchUpReadyBody": "This moves your last-seen marker to {{commit}}. It does not review a group or complete a concept.",
+      "catchUpAction": "Finish catch-up",
+      "catchUpDoneTitle": "Catch-up finished",
+      "catchUpDoneBody": "This browser is caught up through {{commit}}. Group review stays separate.",
+      "catchUpDoneAction": "Catch-up finished",
+      "historyHeading": "Update history",
+      "empty": {
+        "title": "No sections changed in the last update",
+        "body": "The repository moved, but nothing the atlas documents was affected."
+      }
+    },
+
+    "notFound": {
+      "title": "That section is not in this atlas",
+      "body": "Use the navigation on the left, or return to the start screen."
+    }
+  },
+
+  "errors": {
+    "loadTitle": "Atlas could not load",
+    "loadHint": "Start it with <code>node scripts/serve-atlas.mjs .</code> or run <code>node scripts/validate-atlas.mjs .</code> to regenerate <code>data/atlas.bundle.js</code>.",
+    "readFailed": "Could not read data/atlas.json ({{message}}).",
+    "uiMissing": "Could not read data/ui.json ({{message}}). The atlas has no copy of its own text — every label lives in that file."
+  }
+}
