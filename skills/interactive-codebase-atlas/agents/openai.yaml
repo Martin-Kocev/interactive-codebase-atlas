@@ -1,0 +1,7 @@
+interface:
+  display_name: "Interactive Codebase Atlas"
+  short_description: "Explore repositories as trustworthy island atlases"
+  default_prompt: "Use $interactive-codebase-atlas to create a trustworthy island atlas for this repository outside the repository and never Git tracked."
+
+policy:
+  allow_implicit_invocation: false
