@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-08-04
+
+### Fixed
+
+- Replaced pre-publication owner placeholders with the canonical GitHub source and skills.sh badge.
+
 ## [1.0.0] - 2026-08-04
 
 ### Added
