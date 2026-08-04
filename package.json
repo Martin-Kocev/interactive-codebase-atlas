@@ -1,0 +1,18 @@
+{
+  "name": "interactive-codebase-atlas-skills",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portable Agent Skills for codebase exploration and strict Gitflow delivery.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "check": "node scripts/validate-repository.mjs",
+    "check:atlas": "node skills/interactive-codebase-atlas/scripts/validate-atlas.mjs skills/interactive-codebase-atlas/templates --no-write",
+    "check:syntax": "node scripts/check-javascript-syntax.mjs",
+    "test:atlas": "node --test skills/interactive-codebase-atlas/templates/tests/atlas.data.test.mjs skills/interactive-codebase-atlas/templates/tests/progress.api.test.mjs",
+    "test": "npm run check && npm run check:syntax && npm run check:atlas && npm run test:atlas"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
