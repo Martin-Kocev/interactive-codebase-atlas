@@ -1,10 +1,10 @@
-# Interactive Codebase Atlas skills
+# Agent Skills
 
 ## Project overview
 
-This repository distributes two self-contained Agent Skills. `interactive-codebase-atlas` creates evidence-backed, browser-based explanations of unfamiliar repositories while keeping every generated atlas outside the analyzed repository's Git history. `gitflow-feature-workflow` supplies the branching and release discipline used to maintain this repository and other Gitflow projects.
+This repository distributes three self-contained Agent Skills. `interactive-codebase-atlas` creates evidence-backed, browser-based explanations of unfamiliar repositories while keeping every generated atlas outside the analyzed repository's Git history. `gitflow-feature-workflow` supplies branching and release discipline. `orchestrator` coordinates separable work across specialized subagents and independently verifies their integrated output.
 
-Consumers install either skill through the open `skills` CLI. The public source of truth is the content under `skills/`; repository-level files document, validate, and release those packages.
+Consumers install individual skills or select from the full collection through the open `skills` CLI. The public source of truth is the content under `skills/`; repository-level files document, validate, and release those packages.
 
 ## Tech stack
 
@@ -35,9 +35,9 @@ Consumers install either skill through the open `skills` CLI. The public source 
 
 ## Architecture notes
 
-The root repository is a distribution shell. The skills CLI recursively discovers the two `SKILL.md` entrypoints. Each entrypoint progressively discloses its own `references/`, while deterministic work lives in `scripts/` and reusable atlas output files live in `templates/`.
+The root repository is a distribution shell. The skills CLI recursively discovers each `SKILL.md` entrypoint. Entry points progressively disclose their own `references/`, deterministic work lives in `scripts/`, and reusable atlas output files live in `templates/`.
 
-The repository validator checks package identity and every local resource path mentioned by the skill entrypoints. The atlas's own validator and Node tests then exercise the reusable static template independently.
+The repository validator discovers every directory under `skills/`, checks package identity and every local resource path mentioned by each entrypoint, and rejects undocumented packages. The atlas's own validator and Node tests then exercise the reusable static template independently.
 
 ## File reference
 
@@ -48,6 +48,7 @@ The repository validator checks package identity and every local resource path m
 | `skills/interactive-codebase-atlas/scripts/validate-atlas.mjs` | Validates generated atlas structure and content | Node.js standard library |
 | `skills/interactive-codebase-atlas/templates/` | Zero-dependency static atlas starting point | HTML, CSS, JS, JSON, tests |
 | `skills/gitflow-feature-workflow/SKILL.md` | Gitflow routing and definition of done | References feature, release, and hotfix playbooks |
+| `skills/orchestrator/SKILL.md` | Multi-agent decomposition, dispatch, and independent verification | Uses subagent coordination tools supplied by the active harness |
 | `scripts/validate-repository.mjs` | Repository-wide skill package validation | Node.js standard library |
 | `.github/workflows/validate.yml` | Public CI validation | Runs `npm test` on Node.js 20 |
 
