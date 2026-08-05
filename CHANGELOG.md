@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-08-05
+
 ### Added
 
 - Added `orchestrator` as a separately installable skill with Codex UI metadata.
