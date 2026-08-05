@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Added `orchestrator` as a separately installable skill with Codex UI metadata.
+
+### Changed
+
+- Repositioned the public repository as `Martin-Kocev/skills` and added a separate catalog entry and install command for every skill.
+- Made repository validation discover skill directories and require each discovered package to appear in the public README.
+
 ## [1.0.1] - 2026-08-04
 
 ### Fixed

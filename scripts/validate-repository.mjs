@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
-const expectedSkills = ['gitflow-feature-workflow', 'interactive-codebase-atlas'];
+const skillsRoot = path.join(root, 'skills');
+const expectedSkills = readdirSync(skillsRoot, { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => entry.name)
+  .sort();
 const errors = [];
 
 function fail(message) {
@@ -72,7 +76,17 @@ for (const skillName of expectedSkills) {
   }
 }
 
-for (const required of ['README.md', 'LICENSE', 'CHANGELOG.md', 'AGENTS.md', 'package.json']) {
+const readme = read('README.md');
+for (const skillName of expectedSkills) {
+  if (!readme.includes(`skills/${skillName}/`)) {
+    fail(`${skillName}: README.md lacks a direct catalog link`);
+  }
+  if (!readme.includes(`--skill ${skillName}`)) {
+    fail(`${skillName}: README.md lacks a direct install command`);
+  }
+}
+
+for (const required of ['LICENSE', 'CHANGELOG.md', 'AGENTS.md', 'package.json']) {
   read(required);
 }
 

@@ -1,8 +1,8 @@
 {
-  "name": "interactive-codebase-atlas-skills",
+  "name": "martin-kocev-skills",
   "version": "1.0.1",
   "private": true,
-  "description": "Portable Agent Skills for codebase exploration and strict Gitflow delivery.",
+  "description": "Portable Agent Skills for exploration, delivery, and multi-agent coordination.",
   "license": "MIT",
   "type": "module",
   "scripts": {
