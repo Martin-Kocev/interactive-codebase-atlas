@@ -11,7 +11,7 @@ Consumers install individual skills or select from the full collection through t
 - Markdown and YAML skill definitions
 - Dependency-free Node.js ESM scripts and tests
 - Static HTML, CSS, JavaScript, and JSON atlas templates
-- Gitflow with `master`, `develop`, feature, release, and hotfix branches
+- Single long-lived `master` branch with short-lived topic branches
 
 ## Common commands
 
@@ -25,8 +25,9 @@ Consumers install individual skills or select from the full collection through t
 
 ## Project conventions
 
-- Use `gitflow-feature-workflow` for every repository change.
-- Never commit directly to `master` or `develop`; merge long-lived branches with `--no-ff`.
+- `master` is the only long-lived branch; this repository does not use Gitflow. Do not create a `develop` branch here, and do not apply the bundled `gitflow-feature-workflow` skill to this repository — it is a distributed product, not this project's own process.
+- Work directly on `master`, or use a short-lived topic branch merged back into `master` when a change needs review.
+- Keep `npm test` green before every push to `master`.
 - Keep each skill self-contained under `skills/<skill-name>/`.
 - Keep `SKILL.md` frontmatter limited to `name` and `description`.
 - Update root documentation for public installation or layout changes.
